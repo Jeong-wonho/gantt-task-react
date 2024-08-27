@@ -1,4 +1,4 @@
-import React, { ReactChild } from "react";
+import React, { ReactChild, } from "react";
 import { Task } from "../../types/public-types";
 import { addToDate } from "../../helpers/date-helper";
 import styles from "./grid.module.css";
@@ -11,16 +11,33 @@ export type GridBodyProps = {
   columnWidth: number;
   todayColor: string;
   rtl: boolean;
+  // onScrollToToday?: boolean;
+  todayRef: React.RefObject<SVGRectElement>;
+  // ganttRef: React.RefObject<HTMLDivElement>;
+  // onTodayXCalculated?: (todayX:number|null) => void;
 };
+
 export const GridBody: React.FC<GridBodyProps> = ({
-  tasks,
-  dates,
-  rowHeight,
-  svgWidth,
-  columnWidth,
-  todayColor,
-  rtl,
-}) => {
+                                                    tasks,
+                                                    dates,
+                                                    rowHeight,
+                                                    svgWidth,
+                                                    columnWidth,
+                                                    todayColor,
+                                                    rtl,
+                                                    todayRef,
+                                                    // onScrollToToday,
+                                                    // onTodayXCalculated
+                                                  }) => {
+
+  // const todayXRef = useRef<number | null>(null);
+
+  // useEffect(() => {
+  //   if (onTodayXCalculated && todayXRef.current !== null) {
+  //     onTodayXCalculated(todayXRef.current);
+  //   }
+  // }, [onTodayXCalculated])
+
   let y = 0;
   const gridRows: ReactChild[] = [];
   const rowLines: ReactChild[] = [
@@ -42,7 +59,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
         width={svgWidth}
         height={rowHeight}
         className={styles.gridRow}
-      />
+      />,
     );
     rowLines.push(
       <line
@@ -52,7 +69,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
         x2={svgWidth}
         y2={y + rowHeight}
         className={styles.gridRowLine}
-      />
+      />,
     );
     y += rowHeight;
   }
@@ -71,7 +88,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
         x2={tickX}
         y2={y}
         className={styles.gridTick}
-      />
+      />,
     );
     if (
       (i + 1 !== dates.length &&
@@ -84,7 +101,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
         addToDate(
           date,
           date.getTime() - dates[i - 1].getTime(),
-          "millisecond"
+          "millisecond",
         ).getTime() >= now.getTime())
     ) {
       today = (
@@ -94,8 +111,11 @@ export const GridBody: React.FC<GridBodyProps> = ({
           width={columnWidth}
           height={y}
           fill={todayColor}
+          ref={todayRef}
         />
       );
+  //setSrollX 를 이곳에 선언!
+
     }
     // rtl for today
     if (
@@ -111,6 +131,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
           width={columnWidth}
           height={y}
           fill={todayColor}
+          ref={todayRef}
         />
       );
     }

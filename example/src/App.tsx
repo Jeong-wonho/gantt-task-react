@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Task, ViewMode, Gantt } from "gantt-task-react";
 import { ViewSwitcher } from "./components/view-switcher";
 import { getStartEndDateForProject, initTasks } from "./helper";
@@ -9,6 +9,11 @@ const App = () => {
   const [view, setView] = React.useState<ViewMode>(ViewMode.Day);
   const [tasks, setTasks] = React.useState<Task[]>(initTasks());
   const [isChecked, setIsChecked] = React.useState(true);
+  const [isTodayChecked, setIsTodayChecked] = React.useState(false);
+  // const [todayX, setTodayX] = useState<number | null>(null);
+
+  // const todayRef = useRef<(SVGRectElement) | null>(null);
+
   let columnWidth = 65;
   if (view === ViewMode.Year) {
     columnWidth = 350;
@@ -67,17 +72,31 @@ const App = () => {
     console.log("On expander click Id:" + task.id);
   };
 
+  const handleTodayClick= () => {
+    if(isTodayChecked) {
+      console.log('focused to today!')
+    }
+  }
+
+  useEffect(() => {
+    if (isTodayChecked) {
+      setIsTodayChecked(false); // 상태를 초기화하여 재사용 가능하게 함
+    }
+  }, [isTodayChecked]);
+
   return (
     <div className="Wrapper">
       <ViewSwitcher
         onViewModeChange={viewMode => setView(viewMode)}
         onViewListChange={setIsChecked}
         isChecked={isChecked}
+        onTodayChecked={setIsTodayChecked}
       />
       <h3>Gantt With Unlimited Height</h3>
       <Gantt
         tasks={tasks}
         viewMode={view}
+        onScrollToToday={handleTodayClick}
         onDateChange={handleTaskChange}
         onDelete={handleTaskDelete}
         onProgressChange={handleProgressChange}
@@ -86,21 +105,6 @@ const App = () => {
         onSelect={handleSelect}
         onExpanderClick={handleExpanderClick}
         listCellWidth={isChecked ? "155px" : ""}
-        columnWidth={columnWidth}
-      />
-      <h3>Gantt With Limited Height</h3>
-      <Gantt
-        tasks={tasks}
-        viewMode={view}
-        onDateChange={handleTaskChange}
-        onDelete={handleTaskDelete}
-        onProgressChange={handleProgressChange}
-        onDoubleClick={handleDblClick}
-        onClick={handleClick}
-        onSelect={handleSelect}
-        onExpanderClick={handleExpanderClick}
-        listCellWidth={isChecked ? "155px" : ""}
-        ganttHeight={300}
         columnWidth={columnWidth}
       />
     </div>

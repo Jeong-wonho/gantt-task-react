@@ -5,14 +5,22 @@ type ViewSwitcherProps = {
   isChecked: boolean;
   onViewListChange: (isChecked: boolean) => void;
   onViewModeChange: (viewMode: ViewMode) => void;
+  // isTodayChecked: boolean
+  onTodayChecked: (isTodayChecked: boolean)=>void;
 };
 export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
   onViewModeChange,
   onViewListChange,
   isChecked,
+  // isTodayChecked,
+  onTodayChecked
 }) => {
   return (
     <div className="ViewContainer">
+      <button
+        className="Button"
+        onClick={() => onTodayChecked(true)}
+      > 오늘 </button>
       <button
         className="Button"
         onClick={() => onViewModeChange(ViewMode.Hour)}

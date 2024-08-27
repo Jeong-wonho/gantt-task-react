@@ -25,55 +25,58 @@ import { removeHiddenTasks, sortTasks } from "../../helpers/other-helper";
 import styles from "./gantt.module.css";
 
 export const Gantt: React.FunctionComponent<GanttProps> = ({
-  tasks,
-  headerHeight = 50,
-  columnWidth = 60,
-  listCellWidth = "155px",
-  rowHeight = 50,
-  ganttHeight = 0,
-  viewMode = ViewMode.Day,
-  preStepsCount = 1,
-  locale = "en-GB",
-  barFill = 60,
-  barCornerRadius = 3,
-  barProgressColor = "#a3a3ff",
-  barProgressSelectedColor = "#8282f5",
-  barBackgroundColor = "#b8c2cc",
-  barBackgroundSelectedColor = "#aeb8c2",
-  projectProgressColor = "#7db59a",
-  projectProgressSelectedColor = "#59a985",
-  projectBackgroundColor = "#fac465",
-  projectBackgroundSelectedColor = "#f7bb53",
-  milestoneBackgroundColor = "#f1c453",
-  milestoneBackgroundSelectedColor = "#f29e4c",
-  rtl = false,
-  handleWidth = 8,
-  timeStep = 300000,
-  arrowColor = "grey",
-  fontFamily = "Arial, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue",
-  fontSize = "14px",
-  arrowIndent = 20,
-  todayColor = "rgba(252, 248, 227, 0.5)",
-  viewDate,
-  TooltipContent = StandardTooltipContent,
-  TaskListHeader = TaskListHeaderDefault,
-  TaskListTable = TaskListTableDefault,
-  onDateChange,
-  onProgressChange,
-  onDoubleClick,
-  onClick,
-  onDelete,
-  onSelect,
-  onExpanderClick,
-}) => {
+                                                             tasks,
+                                                             headerHeight = 50,
+                                                             columnWidth = 60,
+                                                             listCellWidth = "155px",
+                                                             rowHeight = 50,
+                                                             ganttHeight = 0,
+                                                             viewMode = ViewMode.Day,
+                                                             preStepsCount = 1,
+                                                             locale = "en-GB",
+                                                             barFill = 60,
+                                                             barCornerRadius = 3,
+                                                             barProgressColor = "#a3a3ff",
+                                                             barProgressSelectedColor = "#8282f5",
+                                                             barBackgroundColor = "#b8c2cc",
+                                                             barBackgroundSelectedColor = "#aeb8c2",
+                                                             projectProgressColor = "#7db59a",
+                                                             projectProgressSelectedColor = "#59a985",
+                                                             projectBackgroundColor = "#fac465",
+                                                             projectBackgroundSelectedColor = "#f7bb53",
+                                                             milestoneBackgroundColor = "#f1c453",
+                                                             milestoneBackgroundSelectedColor = "#f29e4c",
+                                                             rtl = false,
+                                                             handleWidth = 8,
+                                                             timeStep = 300000,
+                                                             arrowColor = "grey",
+                                                             fontFamily = "Arial, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue",
+                                                             fontSize = "14px",
+                                                             arrowIndent = 20,
+                                                             todayColor = "rgba(252, 248, 227, 0.5)",
+                                                             viewDate,
+                                                             TooltipContent = StandardTooltipContent,
+                                                             TaskListHeader = TaskListHeaderDefault,
+                                                             TaskListTable = TaskListTableDefault,
+                                                             onDateChange,
+                                                             onProgressChange,
+                                                             onDoubleClick,
+                                                             onClick,
+                                                             onDelete,
+                                                             onSelect,
+                                                             onExpanderClick,
+                                                             onScrollToToday,
+                                                           }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
+
+
   const [dateSetup, setDateSetup] = useState<DateSetup>(() => {
     const [startDate, endDate] = ganttDateRange(tasks, viewMode, preStepsCount);
     return { viewMode, dates: seedDates(startDate, endDate, viewMode) };
   });
   const [currentViewDate, setCurrentViewDate] = useState<Date | undefined>(
-    undefined
+    undefined,
   );
 
   const [taskListWidth, setTaskListWidth] = useState(0);
@@ -85,7 +88,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   });
   const taskHeight = useMemo(
     () => (rowHeight * barFill) / 100,
-    [rowHeight, barFill]
+    [rowHeight, barFill],
   );
 
   const [selectedTask, setSelectedTask] = useState<BarTask>();
@@ -97,6 +100,9 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const [scrollY, setScrollY] = useState(0);
   const [scrollX, setScrollX] = useState(-1);
   const [ignoreScrollEvent, setIgnoreScrollEvent] = useState(false);
+
+  const todayRef = useRef<(SVGRectElement) | null>(null);
+
 
   // task change events
   useEffect(() => {
@@ -110,7 +116,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     const [startDate, endDate] = ganttDateRange(
       filteredTasks,
       viewMode,
-      preStepsCount
+      preStepsCount,
     );
     let newDates = seedDates(startDate, endDate, viewMode);
     if (rtl) {
@@ -139,8 +145,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
         projectBackgroundColor,
         projectBackgroundSelectedColor,
         milestoneBackgroundColor,
-        milestoneBackgroundSelectedColor
-      )
+        milestoneBackgroundSelectedColor,
+      ),
     );
   }, [
     tasks,
@@ -177,7 +183,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
         (d, i) =>
           viewDate.valueOf() >= d.valueOf() &&
           i + 1 !== dates.length &&
-          viewDate.valueOf() < dates[i + 1].valueOf()
+          viewDate.valueOf() < dates[i + 1].valueOf(),
       );
       if (index === -1) {
         return;
@@ -216,7 +222,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
         ) {
           // actions for change
           const newTaskList = barTasks.map(t =>
-            t.id === changedTask.id ? changedTask : t
+            t.id === changedTask.id ? changedTask : t,
           );
           setBarTasks(newTaskList);
         }
@@ -283,6 +289,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
       setIgnoreScrollEvent(true);
     };
 
+
     // subscribe if scroll is necessary
     wrapperRef.current?.addEventListener("wheel", handleWheel, {
       passive: false,
@@ -299,6 +306,29 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     rtl,
     ganttFullHeight,
   ]);
+
+  // todayRef Change
+  useEffect(() => {
+
+    if (onScrollToToday && todayRef.current) {
+      const todayX = todayRef.current?.x.baseVal.value;
+      onScrollToToday();
+      handleScrollToToday(todayX/1.3);
+    }
+
+  },[onScrollToToday])
+
+  const handleScrollToToday = (todayX: number) => {
+    let newScrollX:number = todayX;
+
+    if (newScrollX < 0) {
+      newScrollX = 0;
+    } else if (newScrollX > svgWidth) {
+      newScrollX = svgWidth;
+    }
+    setScrollX(newScrollX);
+    setIgnoreScrollEvent(true); // 이 부분을 통해 수동으로 스크롤 위치를 조정함을 표시
+  };
 
   const handleScrollY = (event: SyntheticEvent<HTMLDivElement>) => {
     if (scrollY !== event.currentTarget.scrollTop && !ignoreScrollEvent) {
@@ -370,7 +400,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const handleSelectedTask = (taskId: string) => {
     const newSelectedTask = barTasks.find(t => t.id === taskId);
     const oldSelectedTask = barTasks.find(
-      t => !!selectedTask && t.id === selectedTask.id
+      t => !!selectedTask && t.id === selectedTask.id,
     );
     if (onSelect) {
       if (oldSelectedTask) {
@@ -395,6 +425,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     dates: dateSetup.dates,
     todayColor,
     rtl,
+    todayRef,
   };
   const calendarProps: CalendarProps = {
     dateSetup,

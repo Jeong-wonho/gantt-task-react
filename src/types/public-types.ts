@@ -72,7 +72,18 @@ export interface EventOption {
    * Invokes on expander on task list
    */
   onExpanderClick?: (task: Task) => void;
+  /**
+   * 오늘 버튼 클릭시 오늘로 이동하는 함수 추가
+   */
+  // onScrollToToday?: boolean;
+  onScrollToToday?: () => void;
+  // /**
+  //  * tickX의 값을 가져오는 함수 추가
+  //  * @param todayX
+  //  */
+  // onTodayXCalculated?: (todayX: number|null) => void;
 }
+
 
 export interface DisplayOption {
   viewMode?: ViewMode;
@@ -142,4 +153,5 @@ export interface StylingOption {
 
 export interface GanttProps extends EventOption, DisplayOption, StylingOption {
   tasks: Task[];
+  // todayRef: React.RefObject<SVGRectElement>;
 }
