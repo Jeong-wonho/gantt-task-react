@@ -66,6 +66,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
                                                              onSelect,
                                                              onExpanderClick,
                                                              onScrollToToday,
+                                                             isTodayChecked,
                                                            }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
@@ -309,14 +310,13 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
 
   // todayRef Change
   useEffect(() => {
-
-    if (onScrollToToday && todayRef.current) {
+    if (isTodayChecked && todayRef.current&&onScrollToToday) {
       const todayX = todayRef.current?.x.baseVal.value;
       onScrollToToday();
       handleScrollToToday(todayX/1.3);
     }
 
-  },[onScrollToToday])
+  },[onScrollToToday, isTodayChecked])
 
   const handleScrollToToday = (todayX: number) => {
     let newScrollX:number = todayX;

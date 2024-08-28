@@ -10,9 +10,6 @@ const App = () => {
   const [tasks, setTasks] = React.useState<Task[]>(initTasks());
   const [isChecked, setIsChecked] = React.useState(true);
   const [isTodayChecked, setIsTodayChecked] = React.useState(false);
-  // const [todayX, setTodayX] = useState<number | null>(null);
-
-  // const todayRef = useRef<(SVGRectElement) | null>(null);
 
   let columnWidth = 65;
   if (view === ViewMode.Year) {
@@ -96,6 +93,7 @@ const App = () => {
       <Gantt
         tasks={tasks}
         viewMode={view}
+        isTodayChecked={isTodayChecked}
         onScrollToToday={handleTodayClick}
         onDateChange={handleTaskChange}
         onDelete={handleTaskDelete}

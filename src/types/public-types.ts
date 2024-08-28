@@ -154,4 +154,5 @@ export interface StylingOption {
 export interface GanttProps extends EventOption, DisplayOption, StylingOption {
   tasks: Task[];
   // todayRef: React.RefObject<SVGRectElement>;
+  isTodayChecked:boolean;
 }
