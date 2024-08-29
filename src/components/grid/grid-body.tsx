@@ -26,17 +26,9 @@ export const GridBody: React.FC<GridBodyProps> = ({
                                                     todayColor,
                                                     rtl,
                                                     todayRef,
-                                                    // onScrollToToday,
-                                                    // onTodayXCalculated
                                                   }) => {
 
-  // const todayXRef = useRef<number | null>(null);
 
-  // useEffect(() => {
-  //   if (onTodayXCalculated && todayXRef.current !== null) {
-  //     onTodayXCalculated(todayXRef.current);
-  //   }
-  // }, [onTodayXCalculated])
 
   let y = 0;
   const gridRows: ReactChild[] = [];
