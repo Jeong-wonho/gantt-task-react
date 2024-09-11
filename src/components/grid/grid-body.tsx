@@ -1,4 +1,4 @@
-import React, { ReactChild, } from "react";
+import React, { ReactChild } from "react";
 import { Task } from "../../types/public-types";
 import { addToDate } from "../../helpers/date-helper";
 import styles from "./grid.module.css";
@@ -27,7 +27,6 @@ export const GridBody: React.FC<GridBodyProps> = ({
                                                     rtl,
                                                     todayRef,
                                                   }) => {
-
 
 
   let y = 0;
@@ -67,6 +66,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   }
 
   const now = new Date();
+  const currentHour = now.getHours(); // 현재 시간을 시간 단위로 추출
   let tickX = 0;
   const ticks: ReactChild[] = [];
   let today: ReactChild = <rect />;
@@ -82,6 +82,9 @@ export const GridBody: React.FC<GridBodyProps> = ({
         className={styles.gridTick}
       />,
     );
+
+
+
     if (
       (i + 1 !== dates.length &&
         date.getTime() < now.getTime() &&
@@ -96,17 +99,34 @@ export const GridBody: React.FC<GridBodyProps> = ({
           "millisecond",
         ).getTime() >= now.getTime())
     ) {
-      today = (
-        <rect
-          x={tickX}
-          y={0}
-          width={columnWidth}
-          height={y}
-          fill={todayColor}
-          ref={todayRef}
-        />
-      );
-  //setSrollX 를 이곳에 선언!
+      // 현재 날짜가 오늘이라면
+      if (now.toDateString() === date.toDateString()) {
+        let relativePosition = 0;
+
+        // 시간대별로 상대적인 위치를 계산
+        if (currentHour < 6) {
+          relativePosition = 0; // 0시~6시는 맨 앞 (좌측)
+        } else if (currentHour >= 6 && currentHour < 12) {
+          relativePosition = columnWidth * (1 / 3); // 6시~12시는 3분의 1 지점
+        } else if (currentHour >= 12 && currentHour < 18) {
+          relativePosition = columnWidth * (2 / 3); // 12시~18시는 3분의 2 지점
+        } else if (currentHour >= 18 && currentHour <= 24) {
+          relativePosition = columnWidth * (2.5 / 3); // 18시~24시는 거의 3분의 2.8 지점
+        }
+
+        today = (
+          <rect
+            x={tickX + relativePosition}
+            y={0}
+            width={2} // 선처럼 보이게 하려면 width 값을 작게
+            height={y} // 전체 높이를 차지하게
+            fill={todayColor} // 어두운 색상 적용
+            ref={todayRef}
+          />
+        );
+      }
+
+      //setSrollX 를 이곳에 선언!
 
     }
     // rtl for today

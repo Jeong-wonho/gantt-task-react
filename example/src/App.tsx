@@ -75,6 +75,22 @@ const App = () => {
     }
   }
 
+  // const handleAddTask = (task: Task) => {
+  //   console.log(task);
+  //   const currentDate = new Date();
+  //
+  //   const newTasks: Task = {
+  //     name: "new task",
+  //     type: "task",
+  //     progress: 100,
+  //     id: new Date().getMilliseconds().toString(),
+  //     start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 2),
+  //     end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 4, 0, 0),
+  //     project: task.id
+  //   };
+  //   setTasks((e) => [...e, newTasks]);
+  // };
+
   useEffect(() => {
     if (isTodayChecked) {
       setIsTodayChecked(false); // 상태를 초기화하여 재사용 가능하게 함
@@ -102,8 +118,10 @@ const App = () => {
         onClick={handleClick}
         onSelect={handleSelect}
         onExpanderClick={handleExpanderClick}
+        rowHeight={40}
         listCellWidth={isChecked ? "155px" : ""}
         columnWidth={columnWidth}
+        todayColor={'#0A1025'}
       />
     </div>
   );

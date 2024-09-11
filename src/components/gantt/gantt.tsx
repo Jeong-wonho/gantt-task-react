@@ -96,6 +96,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const [failedTask, setFailedTask] = useState<BarTask | null>(null);
 
   const svgWidth = dateSetup.dates.length * columnWidth;
+
   const ganttFullHeight = barTasks.length * rowHeight;
 
   const [scrollY, setScrollY] = useState(0);
@@ -239,10 +240,12 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   }, [failedTask, barTasks]);
 
   useEffect(() => {
+    console.log('listCellWidth', listCellWidth);
     if (!listCellWidth) {
       setTaskListWidth(0);
     }
     if (taskListRef.current) {
+      console.log("offsetWidth", taskListRef.current.offsetWidth);
       setTaskListWidth(taskListRef.current.offsetWidth);
     }
   }, [taskListRef, listCellWidth]);
