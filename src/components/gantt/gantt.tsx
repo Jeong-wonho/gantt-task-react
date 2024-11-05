@@ -74,6 +74,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
 
   const [dateSetup, setDateSetup] = useState<DateSetup>(() => {
     const [startDate, endDate] = ganttDateRange(tasks, viewMode, preStepsCount);
+    console.log('startDate', startDate, 'endDate', endDate);
     return { viewMode, dates: seedDates(startDate, endDate, viewMode) };
   });
   const [currentViewDate, setCurrentViewDate] = useState<Date | undefined>(
@@ -240,12 +241,10 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   }, [failedTask, barTasks]);
 
   useEffect(() => {
-    console.log('listCellWidth', listCellWidth);
     if (!listCellWidth) {
       setTaskListWidth(0);
     }
     if (taskListRef.current) {
-      console.log("offsetWidth", taskListRef.current.offsetWidth);
       setTaskListWidth(taskListRef.current.offsetWidth);
     }
   }, [taskListRef, listCellWidth]);
@@ -342,9 +341,52 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     }
   };
 
+  // const handleScrollX = (event: SyntheticEvent<HTMLDivElement>) => {
+  //   if (scrollX !== event.currentTarget.scrollLeft && !ignoreScrollEvent) {
+  //     setScrollX(event.currentTarget.scrollLeft);
+  //     setIgnoreScrollEvent(true);
+  //   } else {
+  //     setIgnoreScrollEvent(false);
+  //   }
+  // };
+
+  const loadMoreDates = () => {
+    const lastDate = dateSetup.dates[dateSetup.dates.length - 1];
+    const newDates = seedDates(
+      lastDate,
+      new Date(lastDate.getTime() + 10 * 24 * 60 * 60 * 1000), // 10일 추가
+      viewMode
+    );
+
+
+    const uniqueNewDates = newDates.filter(
+      (date) => !dateSetup.dates.some((existingDate) => existingDate.getTime() === date.getTime())
+    );
+
+    console.log('uniqueNewDates', uniqueNewDates);
+
+    setDateSetup((prevSetup) => ({
+      ...prevSetup,
+      dates: [...prevSetup.dates, ...uniqueNewDates],
+    }));
+
+    console.log('dateSetup', dateSetup);
+  };
+
+  //수정된 스크롤 x
   const handleScrollX = (event: SyntheticEvent<HTMLDivElement>) => {
-    if (scrollX !== event.currentTarget.scrollLeft && !ignoreScrollEvent) {
-      setScrollX(event.currentTarget.scrollLeft);
+    const scrollLeft = event.currentTarget.scrollLeft;
+    const maxScrollLeft = event.currentTarget.scrollWidth - event.currentTarget.clientWidth;
+
+    console.log('스크롤이동중!');
+
+    // 스크롤 위치가 끝에 도달했을 때 무한 스크롤 트리거
+    if (scrollLeft >= maxScrollLeft && !ignoreScrollEvent) {
+      loadMoreDates();
+    }
+
+    if (scrollX !== scrollLeft && !ignoreScrollEvent) {
+      setScrollX(scrollLeft);
       setIgnoreScrollEvent(true);
     } else {
       setIgnoreScrollEvent(false);

@@ -13,7 +13,6 @@ export const HorizontalScroll: React.FC<{
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollLeft = scroll;
-      console.log(scroll);
     }
   }, [scroll]);
 
